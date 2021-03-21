@@ -11420,6 +11420,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 1961906145}
+  _shakeDuration: 0
+  _shakeAmount: 0.025
+  _decreaseFactor: 1
 --- !u!1 &968739040
 GameObject:
   m_ObjectHideFlags: 0

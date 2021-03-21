@@ -9,6 +9,9 @@ namespace BallGame
 
         protected Player _player;
 
+        public delegate void InteractedByPlayer();
+        public event InteractedByPlayer PlayerInteraction;
+
         protected abstract void Interaction();
 
         private void Awake()
@@ -16,13 +19,6 @@ namespace BallGame
             _player = FindObjectOfType<Player>();
         }
 
-        /*
-        private void Start()
-        {
-            ((IActionable)this).Action();
-            ((IInitializable)this).Action();
-        }
-        */
 
         void IActionable.Action()
         {
@@ -54,6 +50,11 @@ namespace BallGame
         {
             var result = Instantiate(gameObject, transform.position, transform.rotation, transform.parent);
             return result;
+        }
+
+        protected void TriggerEvent()
+        {
+            PlayerInteraction?.Invoke();
         }
     }
 

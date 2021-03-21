@@ -11,6 +11,7 @@ namespace BallGame
         private float _levitationHeight;
         private Material _material;
 
+        
 
         private void Start()
         {
@@ -27,6 +28,8 @@ namespace BallGame
             if (_penaltyDuration < 0)
                 _penaltyDuration = -_penaltyDuration;
             _player.ModifySpeed(_speedPenalty, _penaltyDuration);
+
+            TriggerEvent();
         }
 
         public void Levitate()

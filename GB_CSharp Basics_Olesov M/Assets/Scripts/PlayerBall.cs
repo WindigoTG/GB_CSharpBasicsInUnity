@@ -40,7 +40,7 @@ namespace BallGame
                 _scoreMultiplierCountDown -= Time.deltaTime;
             if (_scoreMultiplierCountDown <= 0)
             {
-                if (!Mathf.Approximately(_rigidbody.velocity.magnitude, 0))
+                if (_rigidbody.velocity.magnitude > 1)
                     _scoreMultiplier += 0.1f;
                 _scoreTracker.AddScore((int)(_scoreMultiplier * _currentSpeed));
                 _scoreMultiplierCountDown = 1.0f;
