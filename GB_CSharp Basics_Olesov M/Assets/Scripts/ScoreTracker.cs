@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace BallGame
 {
-    public class ScoreTracker : MonoBehaviour
+    public class ScoreTracker
     {
         private int _score;
         private int _neededItems;

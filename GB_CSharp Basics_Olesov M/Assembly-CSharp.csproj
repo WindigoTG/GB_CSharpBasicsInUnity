@@ -56,16 +56,16 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\IRotatable.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\IRotatable.cs" />
     <Compile Include="Assets\Scripts\InteractiveObject.cs" />
     <Compile Include="Assets\Scripts\SpeedBonus.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IFlickerable.cs" />
     <Compile Include="Assets\Scripts\BonusHandler.cs" />
-    <Compile Include="Assets\Scripts\CameraController.cs" />
+    <Compile Include="Assets\Scripts\Controller\CameraController.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IActionable.cs" />
     <Compile Include="Assets\Scripts\BadBonus.cs" />
     <Compile Include="Assets\Scripts\ScoreTracker.cs" />
-    <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\Controller\GameController.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IInteractable.cs" />
     <Compile Include="Assets\Scripts\NecessaryBonus.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IInitializable.cs" />
@@ -75,14 +75,17 @@
     <Compile Include="Assets\Scripts\ScoreBonus.cs" />
     <Compile Include="Assets\Scripts\GoodBonus.cs" />
     <Compile Include="Assets\Scripts\SavedData.cs" />
-    <Compile Include="Assets\Scripts\PlayerBall.cs" />
+    <Compile Include="Assets\Scripts\Model\PlayerBall.cs" />
     <Compile Include="Assets\Scripts\SpringTrap.cs" />
-    <Compile Include="Assets\Scripts\Player.cs" />
+    <Compile Include="Assets\Scripts\Model\PlayerBase.cs" />
     <Compile Include="Assets\Scripts\SlowFieldTrap.cs" />
     <Compile Include="Assets\Scripts\ScoreDisplay.cs" />
+    <Compile Include="Assets\Scripts\Interfaces\IExecuteable.cs" />
+    <Compile Include="Assets\Scripts\Reference.cs" />
+    <Compile Include="Assets\Scripts\ExecuteableObjectsList.cs" />
+    <Compile Include="Assets\Scripts\Controller\InputController.cs" />
   </ItemGroup>
   <ItemGroup>
-     <None Include="Assets\Scripts\ClassDiagram1.cd" />
     <Reference Include="UnityEngine">
       <HintPath>I:\Unity\Editor\2020.2.1f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

@@ -32,6 +32,13 @@ namespace BallGame
             TriggerEvent();
         }
 
+        public override void Execute()
+        {
+            if (!IsInteractable) { return; }
+            Levitate();
+            Rotation();
+        }
+
         public void Levitate()
         {
             transform.localPosition = new Vector3(transform.localPosition.x, 
