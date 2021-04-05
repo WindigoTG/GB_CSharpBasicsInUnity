@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,7 @@ namespace BallGame
         private GameObject _player;
         private bool _isPlayerAtFinish;
         private int _necessaryBonusTotalCount;
+        private CameraController _camera;
 
         [SerializeField] Texture _necessaryBonusImage;
 
@@ -19,10 +21,15 @@ namespace BallGame
         {
             Time.timeScale = 1;
             _player = GameObject.FindGameObjectWithTag("Player");
-            SetUpGame();
             _scoreTracker = FindObjectOfType<ScoreTracker>();
-            NecessaryBonus[] necessaryBonus = FindObjectsOfType<NecessaryBonus>();
-            _necessaryBonusTotalCount = necessaryBonus.Length;
+            _camera = FindObjectOfType<CameraController>();
+            SetUpGame();
+            _necessaryBonusTotalCount = FindObjectsOfType<NecessaryBonus>().Length;
+
+            if (_player == null)
+                throw new Exception("The player controlled object must be tagged as «Player»");
+            if (_necessaryBonusImage == null)
+                throw new Exception("An image for Necessary Bonus in GameController must be set up manually");
         }
 
         void Update()
@@ -127,12 +134,28 @@ namespace BallGame
             CloneObjects(FindObjectOfType<SlowFieldTrap>(), "SlowFieldSpawn"); 
 
             _bonuses = new BonusHandler(goodBonus.ToArray(), badBonus.ToArray());
+
+            for (int i = 0; i < _bonuses.goodBonusLength; i++)
+            {
+                _bonuses[i].PlayerInteraction += _camera.Shake;
+                if (_bonuses[i] is NecessaryBonus)
+                    (_bonuses[i] as NecessaryBonus).PlayerInteraction += _scoreTracker.GetNeededItem;
+                if (_bonuses[i] is ScoreBonus)
+                    (_bonuses[i] as ScoreBonus).GetBonusScore += _scoreTracker.AddScore;
+            }
+            for (double i = 0; i < _bonuses.badBonusLength; i++)
+            {
+                _bonuses[i].PlayerInteraction += _camera.Shake;
+            }
         }
 
         //Обобщенный метод для клонирования бонусов
         private List<T> CloneObjects<T>(T bonusToClone, string tag) where T : InteractiveObject
         {
             GameObject[] existingSpawns = GameObject.FindGameObjectsWithTag(tag);
+
+            if (existingSpawns.Length < 2)
+                throw new Exception($"Level must have multiple object spawn points with tag «{tag}» set up");
 
             List<GameObject> spawns = new List<GameObject>();
             foreach (GameObject spawn in existingSpawns)
@@ -149,7 +172,7 @@ namespace BallGame
 
             foreach (T bonus in bonuses)
             {
-                Transform position = spawns[Random.Range(0, spawns.Count)].transform;
+                Transform position = spawns[UnityEngine.Random.Range(0, spawns.Count)].transform;
                 bonus.gameObject.transform.position = position.position;
                 bonus.gameObject.transform.rotation = position.rotation;
                 spawns.Remove(position.gameObject);

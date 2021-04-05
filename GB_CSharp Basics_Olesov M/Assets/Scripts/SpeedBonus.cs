@@ -15,6 +15,7 @@ namespace BallGame
             if (_bonusDuration < 0)
                 _bonusDuration = -_bonusDuration;
             _player.ModifySpeed(_speedBonus, _bonusDuration);
+            TriggerEvent();
         }
 
     }
