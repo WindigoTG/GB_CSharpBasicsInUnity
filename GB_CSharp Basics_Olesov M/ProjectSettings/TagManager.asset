@@ -13,6 +13,9 @@ TagManager:
   - SpringTrapSpawn
   - SlowFieldSpawn
   - InvincibilityBonusSpawn
+  - MiniMapCamera
+  - Radar
+  - ScreenshotCamera
   layers:
   - Default
   - TransparentFX

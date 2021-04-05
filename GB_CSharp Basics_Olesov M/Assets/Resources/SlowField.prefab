@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 528152562472316477}
   - component: {fileID: 528152562472316476}
   - component: {fileID: 528152562472316472}
+  - component: {fileID: -6650306629884446806}
   m_Layer: 0
   m_Name: SlowField
   m_TagString: Untagged
@@ -110,6 +111,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _slowDownForce: 5
+--- !u!114 &-6650306629884446806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528152562472316467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 402bb63c1897f5045bcaaae73d59e2c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bonusType: 5
+  _ico: {fileID: 6014745556994806794, guid: 82bcc35675b8036439b5c59b58b7da81, type: 3}
 --- !u!1 &528152563777300567
 GameObject:
   m_ObjectHideFlags: 0

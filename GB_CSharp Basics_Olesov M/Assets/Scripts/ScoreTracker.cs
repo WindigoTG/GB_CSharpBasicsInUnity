@@ -24,5 +24,11 @@ namespace BallGame
 
         public void GetNeededItem()
         { _neededItems++; }
+
+        public void RestoreOnLoad(GameStatsInfo stats)
+        {
+            _score = stats.ScoreCount;
+            _neededItems = stats.NecessaryBonusCount;
+        }
     }
 }

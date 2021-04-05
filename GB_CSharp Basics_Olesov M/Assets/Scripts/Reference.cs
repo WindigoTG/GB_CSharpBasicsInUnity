@@ -13,6 +13,8 @@ namespace BallGame
         private InvincibilityBonus _invincibilityBonus;
         private SpringTrap _springTrap;
         private SlowFieldTrap _slowFieldTrap;
+        private Camera _miniMapCamera;
+        private GameObject _radar;
 
         public PlayerBall PlayerBall
         {
@@ -135,6 +137,31 @@ namespace BallGame
                 }
 
                 return _slowFieldTrap;
+            }
+        }
+
+        public Camera MiniMapCamera
+        {
+            get
+            {
+                if (_miniMapCamera == null)
+                {
+                    _miniMapCamera = GameObject.FindGameObjectWithTag("MiniMapCamera").GetComponent<Camera>();
+                }
+                return _miniMapCamera;
+            }
+        }
+
+        public GameObject Radar
+        {
+            get
+            {
+                if (_radar == null)
+                {
+                    _radar = GameObject.FindGameObjectWithTag("Radar");
+                }
+
+                return _radar;
             }
         }
     }

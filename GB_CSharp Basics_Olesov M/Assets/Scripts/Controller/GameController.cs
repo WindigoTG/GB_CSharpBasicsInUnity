@@ -9,7 +9,13 @@ namespace BallGame
     {
         private BonusHandler _bonuses;
         private ScoreTracker _scoreTracker;
-        private string _time;
+
+        private int _elapsedTimeOnLoad = 0;
+        private int _currentElapsedTime;
+        private int _timeOfLastLoad = 0;
+
+        private string _currentTime;
+
         private GameObject _player;
         private bool _isPlayerAtFinish;
         private int _necessaryBonusTotalCount;
@@ -17,11 +23,13 @@ namespace BallGame
         private CameraController _cameraController;
         private InputController _inputController;
         private ExecuteableObjectsList _executableObjects;
+        private MiniMapController _miniMapController;
+        private RadarController _radarController;
+
+        private SaveDataRepository _saveDataRepository;
 
         [SerializeField] Texture _necessaryBonusImage;
 
-        public delegate void ControlChange();
-        public event ControlChange ChangeControlMethod;
         private bool _isUsingAlternativeControl;
 
         private bool _isGamePaused;
@@ -32,16 +40,25 @@ namespace BallGame
 
             var reference = new Reference();
             _cameraController = new CameraController(reference.PlayerBall.transform, reference.MainCamera.transform);
+            _miniMapController = new MiniMapController(reference.PlayerBall.transform, reference.MiniMapCamera.transform);
+            _radarController = new RadarController(reference.PlayerBall.transform, reference.Radar.transform);
             _player = reference.PlayerBall.gameObject;
             _inputController = new InputController(reference.PlayerBall);
+            _saveDataRepository = new SaveDataRepository();
 
-            ChangeControlMethod += _inputController.ChangeControl;
+            _inputController.ChangeControlMethod += ChangeControl;
+            _inputController.PauseGame += PauseGame;
+            _inputController.SaveGame += SaveGame;
+            _inputController.LoadGame += LoadGame;
+
             _player.GetComponent<PlayerBall>().GetBonusScore += _scoreTracker.AddScore;
 
             SetUpGame(reference);
             _executableObjects = new ExecuteableObjectsList();
 
             _executableObjects.AddExecuteableObject(_cameraController);
+            _executableObjects.AddExecuteableObject(_miniMapController);
+            _executableObjects.AddExecuteableObject(_radarController);
 
             _necessaryBonusTotalCount = FindObjectsOfType<NecessaryBonus>().Length;
 
@@ -51,6 +68,8 @@ namespace BallGame
 
         void Update()
         {
+            _currentElapsedTime = _elapsedTimeOnLoad + (int)Time.timeSinceLevelLoad - _timeOfLastLoad;
+
             for (var i = 0; i < _executableObjects.Length; i++)
             {
                 var executeableObject = _executableObjects[i];
@@ -62,37 +81,70 @@ namespace BallGame
                 executeableObject.Execute();
             }
 
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                _isUsingAlternativeControl = !_isUsingAlternativeControl;
-                ChangeControlMethod?.Invoke();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                _isGamePaused = !_isGamePaused;
-
-                if (_isGamePaused)
-                    Time.timeScale = 0;
-                else
-                    Time.timeScale = 1;
-            }
+            _inputController.Execute();
         }
 
 
         private void FixedUpdate()
         {
-            _inputController.Execute();
+            _inputController.ExecuteFixed();
+        }
+
+        private void ChangeControl()
+        {
+            _isUsingAlternativeControl = !_isUsingAlternativeControl;
+        }
+
+        private void PauseGame()
+        {
+            _isGamePaused = !_isGamePaused;
+
+            if (_isGamePaused)
+                Time.timeScale = 0;
+            else
+                Time.timeScale = 1;
+        }
+
+        private void SaveGame()
+        {
+            List<InteractiveObject> intObjs = new List<InteractiveObject>();
+            foreach (var o in _executableObjects)
+                if (o is InteractiveObject)
+                    intObjs.Add(o as InteractiveObject);
+
+            GameStatsInfo gameStats = new GameStatsInfo(_scoreTracker.NeededItems, _scoreTracker.Score, _currentElapsedTime);
+
+            _saveDataRepository.Save(_player.GetComponent<PlayerBall>(), intObjs, gameStats);
+        }
+
+        private void LoadGame()
+        {
+            List<InteractiveObject> intObjs = new List<InteractiveObject>();
+            foreach (var o in _executableObjects)
+                if (o is InteractiveObject)
+                    intObjs.Add(o as InteractiveObject);
+
+            GameStatsInfo gameStats = new GameStatsInfo();
+
+            _saveDataRepository.Load(_player.GetComponent<PlayerBall>(), intObjs, ref gameStats);
+            RestoreStats(gameStats);
+        }
+
+        private void RestoreStats(GameStatsInfo stats)
+        {
+            _timeOfLastLoad = (int)Time.timeSinceLevelLoad;
+            _elapsedTimeOnLoad = stats.GameTime;
+            _scoreTracker.RestoreOnLoad(stats);
         }
 
         private void OnGUI()
         {
-            _time = System.TimeSpan.FromSeconds((int)Time.timeSinceLevelLoad).ToString();
+            _currentTime = System.TimeSpan.FromSeconds(_currentElapsedTime).ToString();
             GUI.Box(new Rect(0, 0, 270, 90), "");
             GUI.Label(new Rect(10, 5, 240, 20), "Собрано необходимых предметов: " + _scoreTracker.NeededItems + "/" + _necessaryBonusTotalCount);
             GUI.DrawTexture(new Rect(240, 0, 30, 30), _necessaryBonusImage);
             GUI.Label(new Rect(10, 35, 200, 20), "Бонусных очков: " + _scoreTracker.Score);
-            GUI.Label(new Rect(10, 65, 200, 20), "Время: " + _time);
+            GUI.Label(new Rect(10, 65, 200, 20), "Время: " + _currentTime);
 
             if (_isPlayerAtFinish)
             {
@@ -108,7 +160,7 @@ namespace BallGame
                     GUILayout.BeginArea(new Rect(Screen.width / 2 - 125, 25, 250, 150));
                     GUI.Box(new Rect(0, 0, 250, 150), "Уровень успешно пройден");
                     GUI.Label(new Rect(10, 30, 230, 20), "Вы набрали " + _scoreTracker.Score + " бонусных очков");
-                    GUI.Label(new Rect(10, 60, 230, 20), "Время прохождения: " + _time);
+                    GUI.Label(new Rect(10, 60, 230, 20), "Время прохождения: " + _currentTime);
                     if (GUI.Button(new Rect(10, 90, 230, 20), "Заново"))
                     {
                         RestartGame();
