@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 967956809616747444}
   - component: {fileID: 967956809616747445}
   - component: {fileID: 967956809616747446}
+  - component: {fileID: 7314964767911118198}
   m_Layer: 0
   m_Name: Invincibility
   m_TagString: Untagged
@@ -109,3 +110,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bonusDuration: 15
+--- !u!114 &7314964767911118198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967956809616747447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 402bb63c1897f5045bcaaae73d59e2c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bonusType: 3
+  _ico: {fileID: 6014745556994806794, guid: 8f1dbf7b8a016ea4fa76771505e5eba2, type: 3}

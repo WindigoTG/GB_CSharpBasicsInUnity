@@ -65,7 +65,7 @@ namespace BallGame
         {
             GUI.Box(new Rect(Screen.width - 170, 0, 170, 30), "");
             GUI.Label(new Rect(Screen.width - 160, 0, 160, 20), "Множитель очков: " + _scoreMultiplier.ToString("0.0"));
-            
+
 
             if (_speedUpDuration > 0)
             {
@@ -163,6 +163,39 @@ namespace BallGame
         {
             _material.color = new Color(_material.color.r, _material.color.g,
                                         _material.color.b, Mathf.PingPong(Time.time, 1.0f));
+        }
+
+        public BonusInfo CurrentBonusInfo
+        {
+            get
+            {
+                return new BonusInfo(
+                    _scoreMultiplier,
+                    _scoreMultiplierCountDown,
+                    _currentSpeed,
+                    _speedUpModifier,
+                    _slowDownModifier,
+                    _speedUpDuration,
+                    _slowDownDuration,
+                    _isInvincible,
+                    _invincibilityDuration
+                    );
+            }
+
+            set
+            {
+                _scoreMultiplier = value.scoreMultiplier;
+                _scoreMultiplierCountDown = value.scoreMultiplierCountDown;
+                _currentSpeed = value.currentSpeed;
+                _speedUpModifier = value.speedUpModifier;
+                _slowDownModifier = value.slowDownModifier;
+                _speedUpDuration = value.speedUpDuration;
+                _slowDownDuration = value.slowDownDuration;
+                _isInvincible = value.isInvincible;
+                _invincibilityDuration = value.invincibilityDuration;
+                StartCoroutine("CancelBonus");
+                StartCoroutine("CancelInvincibility");
+            }
         }
     }
 }

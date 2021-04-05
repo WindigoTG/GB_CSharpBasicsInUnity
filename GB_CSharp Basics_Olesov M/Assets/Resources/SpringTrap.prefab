@@ -4817,6 +4817,7 @@ GameObject:
   - component: {fileID: 8727593312365797513}
   - component: {fileID: 8727593312365797512}
   - component: {fileID: 8727593312365797516}
+  - component: {fileID: 4208298665956133915}
   m_Layer: 0
   m_Name: SpringTrap
   m_TagString: Untagged
@@ -4915,3 +4916,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _force: 4
+--- !u!114 &4208298665956133915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8727593312365797509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 402bb63c1897f5045bcaaae73d59e2c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bonusType: 5
+  _ico: {fileID: 6014745556994806794, guid: 82bcc35675b8036439b5c59b58b7da81, type: 3}

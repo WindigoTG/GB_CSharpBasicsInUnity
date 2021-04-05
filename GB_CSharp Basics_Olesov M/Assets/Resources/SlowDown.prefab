@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8627862035352775605}
   - component: {fileID: 8627862035352775602}
   - component: {fileID: 8627862035352775603}
+  - component: {fileID: 64563764497017390}
   m_Layer: 0
   m_Name: SlowDown
   m_TagString: Untagged
@@ -110,3 +111,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speedPenalty: -0.6
   _penaltyDuration: 15
+--- !u!114 &64563764497017390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8627862035352775600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 402bb63c1897f5045bcaaae73d59e2c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bonusType: 4
+  _ico: {fileID: 6014745556994806794, guid: 750f5cbfca577af4a95368b247d9e666, type: 3}
