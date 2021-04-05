@@ -19,6 +19,12 @@ namespace BallGame
 
         }
 
+        public override void Execute()
+        {
+            if (!IsInteractable) { return; }
+            Levitate();
+            Flicker();
+        }
         public void Flicker()
         {
             _material.color = new Color(_material.color.r, _material.color.g,

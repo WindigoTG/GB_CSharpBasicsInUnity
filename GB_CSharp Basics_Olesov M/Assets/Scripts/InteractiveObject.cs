@@ -3,22 +3,40 @@ using UnityEngine;
 
 namespace BallGame
 {
-    public abstract class InteractiveObject : MonoBehaviour, IInteractable, ICloneable
+    public abstract class InteractiveObject : MonoBehaviour, IInteractable, ICloneable, IExecuteable
     {
-        public bool IsInteractable { get; } = true;
+        //public bool IsInteractable { get; } = true;
 
-        protected Player _player;
+        protected PlayerBall _player;
 
         public delegate void InteractedByPlayer();
         public event InteractedByPlayer PlayerInteraction;
+
+        private bool _isInteractable;
+
+        public bool IsInteractable
+        {
+            get { return _isInteractable; }
+            private set
+            {
+                _isInteractable = value;
+                GetComponent<Renderer>().enabled = _isInteractable;
+                GetComponent<Collider>().enabled = _isInteractable;
+            }
+        }
+
 
         protected abstract void Interaction();
 
         private void Awake()
         {
-            _player = FindObjectOfType<Player>();
+            IsInteractable = true;
         }
 
+        public void RegisterPlayer(PlayerBall player)
+        {
+            _player = player;
+        }
 
         void IActionable.Action()
         {
@@ -43,7 +61,7 @@ namespace BallGame
                 return;
             }
             Interaction();
-            Destroy(gameObject);
+            IsInteractable = false;
         }
 
         public object Clone()
@@ -56,6 +74,8 @@ namespace BallGame
         {
             PlayerInteraction?.Invoke();
         }
+
+        public abstract void Execute();
     }
 
 }
