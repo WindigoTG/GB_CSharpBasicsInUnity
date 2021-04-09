@@ -72,18 +72,21 @@
     <Compile Include="Assets\Scripts\Controller\CameraController.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IActionable.cs" />
     <Compile Include="Assets\Scripts\Model\BadBonus.cs" />
+    <Compile Include="Assets\Scripts\Controller\PhotoController.cs" />
     <Compile Include="Assets\Scripts\ScoreTracker.cs" />
     <Compile Include="Assets\Scripts\GameStatsInfo.cs" />
     <Compile Include="Assets\Scripts\BonusInfo.cs" />
     <Compile Include="Assets\Scripts\SaveLoad\PlayerSavedData.cs" />
     <Compile Include="Assets\Scripts\Reference.cs" />
     <Compile Include="Assets\Scripts\Controller\GameController.cs" />
+    <Compile Include="Assets\Scripts\Controller\MiniMapController.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IInteractable.cs" />
     <Compile Include="Assets\Scripts\Model\NecessaryBonus.cs" />
     <Compile Include="Assets\Scripts\SaveLoad\BinarySerializationData.cs" />
     <Compile Include="Assets\Scripts\SaveLoad\StatsSavedData.cs" />
     <Compile Include="Assets\Scripts\Interfaces\IInitializable.cs" />
     <Compile Include="Assets\Scripts\Interfaces\ILevitateable.cs" />
+    <Compile Include="Assets\Scripts\SaveLoad\GameSavedData.cs" />
     <Compile Include="Assets\Scripts\Model\InvincibilityBonus.cs" />
     <Compile Include="Assets\Scripts\SaveLoad\SerializableXMLData.cs" />
     <Compile Include="Assets\Scripts\Model\Trap.cs" />
@@ -95,16 +98,17 @@
     <Compile Include="Assets\Scripts\Extensions.cs" />
     <Compile Include="Assets\Scripts\Model\PlayerBall.cs" />
     <Compile Include="Assets\Scripts\Model\SpringTrap.cs" />
+    <Compile Include="Assets\Scripts\Controller\RadarController.cs" />
     <Compile Include="Assets\Scripts\Crypto.cs" />
     <Compile Include="Assets\Scripts\Model\PlayerBase.cs" />
+    <Compile Include="Assets\Scripts\MakeRadarObject.cs" />
     <Compile Include="Assets\Scripts\SaveLoad\PlayerPrefsData.cs" />
     <Compile Include="Assets\Scripts\Model\SlowFieldTrap.cs" />
     <Compile Include="Assets\Scripts\ScoreDisplay.cs" />
-    <Compile Include="Assets\Scripts\SaveLoad\GameSavedData.cs" />
-    <Compile Include="Assets\Scripts\MakeRadarObject.cs" />
-    <Compile Include="Assets\Scripts\Controller\MiniMapController.cs" />
-    <Compile Include="Assets\Scripts\Controller\RadarController.cs" />
-    <Compile Include="Assets\Scripts\Controller\PhotoController.cs" />
+    <Compile Include="Assets\Scripts\EditorTest\SpawnPointPlacementWindow.cs" />
+    <Compile Include="Assets\Scripts\EditorTest\MenuItems.cs" />
+    <Compile Include="Assets\Scripts\EditorTest\SpawnPointPlacementExtention.cs" />
+    <Compile Include="Assets\Scripts\EditorTest\SpawnPointPlacement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
