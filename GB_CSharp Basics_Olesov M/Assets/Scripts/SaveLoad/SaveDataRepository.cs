@@ -6,17 +6,21 @@ namespace BallGame
 {
     public sealed class SaveDataRepository
     {
-        private readonly IData<GameSavedData> _data;
+        private readonly IData<SavedGamedData> _currentGameData;
+        private readonly IData<SavedUsersData> _userData;
 
         private const string _folderName = "dataSave";
-        private const string _fileName = "data.bat";
+        private const string _saveGameFileName = "data.bat";
+        private const string _userDataFileName = "userData.bat";
         private readonly string _path;
 
         public SaveDataRepository()
         {
             //_data = new JsonData<GameSavedData>();
-            _data = new BinarySerializationData<GameSavedData>();
+            _currentGameData = new BinarySerializationData<SavedGamedData>();
             //_data = new SerializableXMLData<GameSavedData>();
+
+            _userData = new BinarySerializationData<SavedUsersData>();
 
             _path = Path.Combine(Application.dataPath, _folderName);
         }
@@ -28,7 +32,7 @@ namespace BallGame
                 Directory.CreateDirectory(_path);
             }
 
-            var savedData = new GameSavedData
+            var savedData = new SavedGamedData
             {
                 Player = new PlayerSavedData
                 {
@@ -54,15 +58,15 @@ namespace BallGame
                     });
             }
 
-            _data.Save(savedData, Path.Combine(_path, _fileName));
+            _currentGameData.Save(savedData, Path.Combine(_path, _saveGameFileName));
         }
 
         public void Load(PlayerBall player, List<InteractiveObject> intObjs, ref GameStatsInfo gameStats)
         {
-            var file = Path.Combine(_path, _fileName);
+            var file = Path.Combine(_path, _saveGameFileName);
             if (!File.Exists(file)) return;
 
-            var newData = _data.Load(file);
+            var newData = _currentGameData.Load(file);
             player.transform.position = newData.Player.Position;
             player.name = newData.Player.Name;
             player.gameObject.SetActive(newData.Player.IsEnabled);
@@ -78,6 +82,30 @@ namespace BallGame
                 intObjs[i].GetComponent<InteractiveObject>().IsInteractable = newData.Objects[i].IsEnabled;
                 intObjs[i].transform.rotation = Quaternion.Euler(newData.Objects[i].Rotation);
             }
+        }
+
+        public void SaveUserData(List<UserData> users)
+        {
+            if (!Directory.Exists(Path.Combine(_path)))
+            {
+                Directory.CreateDirectory(_path);
+            }
+
+            var saveData = new SavedUsersData { Users = new List<UserData>()};
+            for (int i = 0; i < users.Count; i++)
+                saveData.Users.Add(users[i]);
+
+            _userData.Save(saveData, Path.Combine(_path, _userDataFileName));
+        }
+
+        public void LoadUserData(List<UserData> users)
+        {
+            var file = Path.Combine(_path, _userDataFileName);
+            if (!File.Exists(file)) return;
+
+            var newData = _userData.Load(file);
+            for (int i = 0; i < newData.Users.Count; i++)
+                users.Add(newData.Users[i]);
         }
     }
 }

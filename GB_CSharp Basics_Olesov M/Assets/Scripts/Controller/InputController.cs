@@ -7,7 +7,6 @@ namespace BallGame
         private readonly PlayerBase _playerBase;
         private bool _isUsingAlternativeControl;
 
-        //private readonly SaveDataRepository _saveDataRepository;
         private readonly KeyCode _savePlayer = KeyCode.C;
         private readonly KeyCode _loadPlayer = KeyCode.V;
 
@@ -20,8 +19,6 @@ namespace BallGame
         public InputController(PlayerBase player)
         {
             _playerBase = player;
-
-            //_saveDataRepository = new SaveDataRepository();
         }
 
         public void Execute()
@@ -29,12 +26,10 @@ namespace BallGame
             if (Input.GetKeyDown(_savePlayer))
             {
                 SaveGame?.Invoke();
-                //_saveDataRepository.Save(_playerBase);
             }
             if (Input.GetKeyDown(_loadPlayer))
             {
                 LoadGame?.Invoke();
-                //_saveDataRepository.Load(_playerBase);
             }
 
             if (Input.GetKeyDown(KeyCode.Tab))

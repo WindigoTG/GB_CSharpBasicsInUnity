@@ -9,6 +9,8 @@ namespace BallGame
     {
         private BonusHandler _bonuses;
         private ScoreTracker _scoreTracker;
+        private UserDataHandler _usersData;
+        private UserSelectionManager _userSelectionManager;
 
         private int _elapsedTimeOnLoad = 0;
         private int _currentElapsedTime;
@@ -31,8 +33,10 @@ namespace BallGame
         [SerializeField] Texture _necessaryBonusImage;
 
         private bool _isUsingAlternativeControl;
-
         private bool _isGamePaused;
+        private bool _isSelectingUser = true;
+
+        
 
         private void Awake()
         {
@@ -53,6 +57,11 @@ namespace BallGame
 
             _player.GetComponent<PlayerBall>().GetBonusScore += _scoreTracker.AddScore;
 
+            _usersData = new UserDataHandler(_saveDataRepository);
+
+            _userSelectionManager = new UserSelectionManager(_usersData);
+            _userSelectionManager.BeginGame += StartGame;
+
             SetUpGame(reference);
             _executableObjects = new ExecuteableObjectsList();
 
@@ -64,8 +73,11 @@ namespace BallGame
 
             if (_necessaryBonusImage == null)
                 throw new Exception("An image for Necessary Bonus in GameController must be set up manually");
+
+            Time.timeScale = 0;
         }
 
+        #region Update
         void Update()
         {
             _currentElapsedTime = _elapsedTimeOnLoad + (int)Time.timeSinceLevelLoad - _timeOfLastLoad;
@@ -89,22 +101,9 @@ namespace BallGame
         {
             _inputController.ExecuteFixed();
         }
+        #endregion
 
-        private void ChangeControl()
-        {
-            _isUsingAlternativeControl = !_isUsingAlternativeControl;
-        }
-
-        private void PauseGame()
-        {
-            _isGamePaused = !_isGamePaused;
-
-            if (_isGamePaused)
-                Time.timeScale = 0;
-            else
-                Time.timeScale = 1;
-        }
-
+        #region Save/Load
         private void SaveGame()
         {
             List<InteractiveObject> intObjs = new List<InteractiveObject>();
@@ -136,7 +135,9 @@ namespace BallGame
             _elapsedTimeOnLoad = stats.GameTime;
             _scoreTracker.RestoreOnLoad(stats);
         }
+        #endregion
 
+        #region UI
         private void OnGUI()
         {
             _currentTime = System.TimeSpan.FromSeconds(_currentElapsedTime).ToString();
@@ -168,8 +169,43 @@ namespace BallGame
                     if (GUI.Button(new Rect(10, 120, 230, 20), "Выход"))
                         Application.Quit();
                     GUILayout.EndArea();
+
+                    #region Top 10 scores
+                    GUILayout.BeginArea(new Rect(Screen.width / 2 - 300, 200, 600, 250));
+
+
+                    GUI.Box(new Rect(0, 0, 400, 250), "10 лучших результатов");
+                    GUI.Label(new Rect(30, 20, 180, 20), "Имя игрока");
+                    GUI.Label(new Rect(200, 20, 90, 20), "Время");
+                    GUI.Label(new Rect(300, 20, 90, 20), "Очки");
+                    for (int i = 0; i < _usersData.TopTen.Count; i++)
+                    {
+                        (string topUserName, int topUserTime, int topUserScore) = _usersData.TopTen[i];
+                        GUI.Label(new Rect(10, 40 + 20 * i, 15, 20), (i + 1).ToString());
+                        GUI.Label(new Rect(30, 40 + 20 * i, 160, 20), topUserName);
+                        GUI.Label(new Rect(200, 40 + 20 * i, 90, 20), TimeSpan.FromSeconds(topUserTime).ToString());
+                        GUI.Label(new Rect(300, 40 + 20 * i, 90, 20), topUserScore.ToString());
+                    }
+
+                    (string userName, List<ResultData> userResults) = _usersData[_usersData.SelectedUser];
+                    GUI.Box(new Rect(400, 0, 200, 250), "Результаты " + userName);
+                    GUI.Label(new Rect(430, 20, 90, 20), "Время");
+                    GUI.Label(new Rect(520, 20, 90, 20), "Очки");
+
+                    for (int i = 0; i < userResults.Count; i++)
+                    {
+                        (int resultTime, int resultScore) = userResults[i];
+                        GUI.Label(new Rect(410, 40 + 20 * i, 15, 20), (i + 1).ToString());
+                        GUI.Label(new Rect(430, 40 + 20 * i, 90, 20), TimeSpan.FromSeconds(resultTime).ToString());
+                        GUI.Label(new Rect(520, 40 + 20 * i, 90, 20), resultScore.ToString());
+                    }
+
+                    GUILayout.EndArea();
+                    #endregion
                 }
             }
+
+            
 
             if (_isGamePaused)
             {
@@ -183,7 +219,7 @@ namespace BallGame
                 {
                     _isGamePaused = false;
                     Time.timeScale = 1;
-                }    
+                }
                 GUILayout.EndArea();
             }
 
@@ -196,16 +232,47 @@ namespace BallGame
                 controlMethod = "Клавиатура/Геймпад";
             GUI.Label(new Rect(10, Screen.height - 30, 350, 20), "Текущий метод управления: " + controlMethod);
         }
+        #endregion
 
+        #region End game trigger events
         private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject == _player) _isPlayerAtFinish = true;
-            if (_scoreTracker.NeededItems == _necessaryBonusTotalCount) Time.timeScale = 0;
+            if (_scoreTracker.NeededItems == _necessaryBonusTotalCount)
+            {
+                Time.timeScale = 0;
+                _usersData.AddResult(new ResultData {Time = _currentElapsedTime, Score = _scoreTracker.Score });
+            }
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (other.gameObject == _player) _isPlayerAtFinish = false;
+        }
+        #endregion
+
+        private void StartGame()
+        {
+            Time.timeScale = 1;
+            _isSelectingUser = false;
+        }
+
+        private void ChangeControl()
+        {
+            _isUsingAlternativeControl = !_isUsingAlternativeControl;
+        }
+
+        private void PauseGame()
+        {
+            if (!_isSelectingUser && !_isPlayerAtFinish)
+            {
+                _isGamePaused = !_isGamePaused;
+
+                if (_isGamePaused)
+                    Time.timeScale = 0;
+                else
+                    Time.timeScale = 1;
+            }
         }
 
         private void RestartGame()
@@ -213,6 +280,8 @@ namespace BallGame
             Time.timeScale = 1;
             SceneManager.LoadScene(0);
         }
+
+        #region Setting up the game
         private void SetUpGame(Reference reference)
         {
             List<GoodBonus> goodBonus = new List<GoodBonus>();
@@ -275,5 +344,6 @@ namespace BallGame
 
             return bonuses;
         }
+        #endregion
     }
 }
